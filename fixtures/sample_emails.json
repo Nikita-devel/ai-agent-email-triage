@@ -1,0 +1,146 @@
+[
+  {
+    "id": "F01",
+    "from_name": "Jean Dupont",
+    "from_email": "j.dupont@metallerie-rhone.fr",
+    "subject": "Probleme d'authentification API depuis la mise a jour",
+    "body": "Bonjour,\n\nDepuis la mise a jour de mardi, notre connecteur ERP recoit une erreur 401 sur l'endpoint /api/v2/orders. Les cles n'ont pas ete modifiees de notre cote. La production est bloquee, nous ne pouvons plus exporter les ordres de fabrication.\n\nPouvez-vous regarder rapidement ? Nous avons besoin d'une reponse avant vendredi 12/06.\n\nCordialement,\nJean Dupont\nResponsable methodes - Metallerie du Rhone",
+    "expected": {"category": "technical_support", "priority": "urgent", "has_deadline": true}
+  },
+  {
+    "id": "F02",
+    "from_name": "Claire Moreau",
+    "from_email": "c.moreau@atelier-pech.com",
+    "subject": "Demande de devis - application de planification atelier",
+    "body": "Bonjour,\n\nNous sommes une PME de chaudronnerie (32 personnes, Toulouse). Nous cherchons a remplacer notre planification Excel par un outil sur mesure.\n\nSeriez-vous disponible pour un echange de 30 minutes la semaine prochaine ? Nous souhaitons egalement connaitre vos tarifs de maintenance mensuelle.\n\nBien a vous,\nClaire Moreau\nDirectrice de production",
+    "expected": {"category": "sales_inquiry", "priority": "medium", "has_deadline": false}
+  },
+  {
+    "id": "F03",
+    "from_name": "Marc Lefevre",
+    "from_email": "marc.lefevre@sotimec.fr",
+    "subject": "RE: Livraison module decoupe - toujours rien",
+    "body": "Bonjour,\n\nC'est la troisieme fois que je relance. Le module d'optimisation de decoupe devait etre livre le 15 mai, nous sommes le 4 juin. Aucune nouvelle, aucun planning revise.\n\nNous avons paye 40% d'acompte. Si nous n'avons pas de retour concret sous 48h, nous demanderons le remboursement.\n\nMarc Lefevre\nSOTIMEC",
+    "expected": {"category": "complaint", "priority": "urgent", "has_deadline": true}
+  },
+  {
+    "id": "F04",
+    "from_name": "Sophie Bertrand",
+    "from_email": "compta@peyre-industries.fr",
+    "subject": "Facture 2026-041 - demande de RIB et mention TVA",
+    "body": "Bonjour,\n\nPour le reglement de la facture 2026-041, notre service comptabilite a besoin de votre RIB au format IBAN ainsi que de la mention exacte relative a la TVA (auto-entrepreneur).\n\nMerci de nous transmettre cela avant la cloture du mois, le 30.\n\nCordialement,\nSophie Bertrand\nComptabilite",
+    "expected": {"category": "administrative", "priority": "medium", "has_deadline": true}
+  },
+  {
+    "id": "F05",
+    "from_name": "Thomas Weber",
+    "from_email": "t.weber@praezisionsteil.de",
+    "subject": "Integration question before we commit",
+    "body": "Hello,\n\nWe found your case study on cutting optimisation. Before starting a project we need to know: can your solution read directly from a Sage X3 database, or do we need an export step?\n\nWe are planning the 2027 budget, so no rush, but a short technical answer would help.\n\nBest regards,\nThomas Weber\nHead of IT, Praezisionsteil GmbH",
+    "expected": {"category": "sales_inquiry", "priority": "low", "has_deadline": false}
+  },
+  {
+    "id": "F06",
+    "from_name": "Nadia Benali",
+    "from_email": "n.benali@ferronnerie-lyon.fr",
+    "subject": "L'export PDF sort des pages blanches",
+    "body": "Bonjour,\n\nDepuis ce matin, quand on genere le plan de decoupe en PDF, une page sur deux sort blanche. Cela arrive uniquement sur les plans de plus de 40 pieces.\n\nCe n'est pas bloquant (on imprime depuis l'ecran) mais c'est genant.\n\nMerci,\nNadia",
+    "expected": {"category": "technical_support", "priority": "low", "has_deadline": false}
+  },
+  {
+    "id": "F07",
+    "from_name": "LinkedIn",
+    "from_email": "messages-noreply@linkedin.com",
+    "subject": "Vous avez 4 nouvelles invitations en attente",
+    "body": "Bonjour Nikita,\n\n4 personnes souhaitent rejoindre votre reseau. Consultez vos invitations en attente.\n\nSe desabonner de ces emails.",
+    "expected": {"category": "other", "priority": "low", "has_deadline": false}
+  },
+  {
+    "id": "F08",
+    "from_name": "Philippe Garnier",
+    "from_email": "p.garnier@garnier-tolerie.fr",
+    "subject": "Serveur inaccessible ce matin",
+    "body": "Bonjour,\n\nPersonne dans l'atelier n'arrive a ouvrir l'application depuis 7h00. Message : 'connexion refusee'. 14 personnes sont a l'arret.\n\nJe vous appelle dans 10 minutes.\n\nPhilippe Garnier\nGerant",
+    "expected": {"category": "technical_support", "priority": "urgent", "has_deadline": false}
+  },
+  {
+    "id": "F09",
+    "from_name": "Elodie Rousseau",
+    "from_email": "e.rousseau@cci-lyon.fr",
+    "subject": "Invitation - petit dejeuner numerique PME industrielles, 18 septembre",
+    "body": "Bonjour,\n\nLa CCI Lyon Metropole organise un petit dejeuner sur la digitalisation des PME industrielles le 18 septembre a 8h30.\n\nSouhaitez-vous intervenir 15 minutes sur l'automatisation par IA ? Merci de nous confirmer avant le 1er septembre.\n\nElodie Rousseau\nCCI Lyon Metropole",
+    "expected": {"category": "other", "priority": "medium", "has_deadline": true}
+  },
+  {
+    "id": "F10",
+    "from_name": "Antoine Ferrand",
+    "from_email": "a.ferrand@mecanique-drome.fr",
+    "subject": "Tarifs maintenance et engagement",
+    "body": "Bonjour,\n\nSuite a notre appel, pourriez-vous m'envoyer une proposition ecrite pour le contrat de maintenance mensuel ? Nous aimerions comprendre ce qui est inclus (corrections, evolutions, temps de reponse) et la duree d'engagement.\n\nMerci d'avance,\nAntoine Ferrand",
+    "expected": {"category": "sales_inquiry", "priority": "high", "has_deadline": false}
+  },
+  {
+    "id": "F11",
+    "from_name": "Karine Dubois",
+    "from_email": "k.dubois@inox-services.fr",
+    "subject": "Formation utilisateurs decevante",
+    "body": "Bonjour,\n\nLa session de formation de jeudi a dure 45 minutes au lieu des 2 heures prevues, et la moitie des sujets annonces n'ont pas ete traites. Mes operateurs sont ressortis sans savoir creer un ordre de fabrication.\n\nJe souhaite qu'une session complete soit reprogrammee sans surcout.\n\nKarine Dubois\nResponsable qualite",
+    "expected": {"category": "complaint", "priority": "high", "has_deadline": false}
+  },
+  {
+    "id": "F12",
+    "from_name": "URSSAF",
+    "from_email": "noreply@urssaf.fr",
+    "subject": "Votre declaration trimestrielle est disponible",
+    "body": "Bonjour,\n\nVotre declaration de chiffre d'affaires pour le trimestre est disponible dans votre espace en ligne. La date limite de declaration est fixee au 31 juillet.\n\nCe message est automatique, merci de ne pas y repondre.",
+    "expected": {"category": "administrative", "priority": "high", "has_deadline": true}
+  },
+  {
+    "id": "F13",
+    "from_name": "David Chen",
+    "from_email": "david.chen@nordflex.com",
+    "subject": "Data export stuck at 80%",
+    "body": "Hi,\n\nThe monthly data export has been stuck at 80% for two hours. We tried restarting the job twice, same result. No error message in the UI.\n\nLogs attached would be useful - where do we find them?\n\nThanks,\nDavid",
+    "expected": {"category": "technical_support", "priority": "high", "has_deadline": false}
+  },
+  {
+    "id": "F14",
+    "from_name": "Isabelle Marchand",
+    "from_email": "i.marchand@groupe-savoie-metal.fr",
+    "subject": "Presentation de notre besoin - 3 sites de production",
+    "body": "Bonjour,\n\nNotre groupe compte 3 sites de production (Chambery, Annecy, Grenoble) avec des methodes de planification differentes. Nous voulons harmoniser.\n\nBudget indicatif : 15 a 25 kEUR pour la premiere phase. Nous lancons la consultation en octobre.\n\nEtes-vous en capacite de traiter un projet multi-sites ?\n\nIsabelle Marchand\nDirectrice des operations",
+    "expected": {"category": "sales_inquiry", "priority": "high", "has_deadline": false}
+  },
+  {
+    "id": "F15",
+    "from_name": "Julien Petit",
+    "from_email": "j.petit@petit-assemblage.fr",
+    "subject": "Mot de passe oublie - compte administrateur",
+    "body": "Bonjour,\n\nJ'ai perdu le mot de passe du compte admin et la reinitialisation par email ne fonctionne pas (rien recu, ni dans les spams).\n\nComment procede-t-on ?\n\nJulien",
+    "expected": {"category": "technical_support", "priority": "medium", "has_deadline": false}
+  },
+  {
+    "id": "F16",
+    "from_name": "Growth Partners",
+    "from_email": "outreach@growthpartners-agency.io",
+    "subject": "Doubler vos leads en 30 jours - etude de cas offerte",
+    "body": "Bonjour,\n\nNous aidons les prestataires IT a generer 3x plus de rendez-vous qualifies grace a notre methode outbound.\n\nInteresse par un audit gratuit de 15 minutes ?\n\nA disposition,\nGrowth Partners",
+    "expected": {"category": "other", "priority": "low", "has_deadline": false}
+  },
+  {
+    "id": "F17",
+    "from_name": "Yoan Eskinazi",
+    "from_email": "y.eskinazi@peyre-sa.fr",
+    "subject": "Renouvellement du contrat de maintenance - signature",
+    "body": "Bonjour Nikita,\n\nLe contrat de maintenance annuel arrive a echeance le 30 septembre. Peux-tu m'envoyer l'avenant a signer, avec les conditions actualisees ?\n\nJ'aimerais boucler avant mon depart en conges le 20 septembre.\n\nMerci,\nYoan",
+    "expected": {"category": "administrative", "priority": "high", "has_deadline": true}
+  },
+  {
+    "id": "F18",
+    "from_name": "Fatima Ziani",
+    "from_email": "f.ziani@alu-concept.fr",
+    "subject": "Facturation d'heures non realisees",
+    "body": "Bonjour,\n\nSur la facture de mai, je vois 12 heures de developpement facturees pour le module de reporting. Or ce module n'a jamais ete livre ni meme demarre selon notre dernier point.\n\nMerci de m'expliquer, ou d'emettre un avoir.\n\nFatima Ziani\nDirection administrative et financiere",
+    "expected": {"category": "complaint", "priority": "high", "has_deadline": false}
+  }
+]
