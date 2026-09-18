@@ -150,3 +150,42 @@ def mark_seen_bulk(uids: list[str], cfg: Config = config) -> None:
         return
     with imap_connection(cfg) as conn:
         conn.uid("STORE", ",".join(uids), "+FLAGS", "(\\Seen)")
+
+
+class ImapReader:
+    """Reader interface over IMAP - see app.ingest.get_reader()."""
+
+    name = "imap"
+
+    def __init__(self, cfg: Config = config) -> None:
+        cfg.require_imap()
+        self.cfg = cfg
+
+    def fetch_unseen(self, limit: int | None = None) -> list[IncomingEmail]:
+        return fetch_unseen(self.cfg, limit)
+
+    def mark_seen(self, uid: str) -> None:
+        mark_seen(uid, self.cfg)
+
+    def append(self, raw: bytes, internal_date) -> str:
+        """Insert a message into the mailbox without sending it (used by the seeder)."""
+        import imaplib as _imaplib
+        import time as _time
+
+        with imap_connection(self.cfg) as conn:
+            status, _ = conn.append(
+                self.cfg.imap_folder,
+                "",
+                _imaplib.Time2Internaldate(_time.mktime(internal_date.timetuple())),
+                raw,
+            )
+        return status
+
+    def purge(self, header_name: str, header_value: str) -> int:
+        with imap_connection(self.cfg) as conn:
+            status, data = conn.uid("SEARCH", None, "HEADER", header_name, header_value)
+            uids = data[0].split() if status == "OK" else []
+            for uid in uids:
+                conn.uid("STORE", uid.decode(), "+FLAGS", "(\\Deleted)")
+            conn.expunge()
+        return len(uids)

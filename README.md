@@ -20,9 +20,11 @@ sort their inbox by hand.
 
 ## What it does
 
-1. **Ingest** — polls a mailbox over IMAP, reads only unread messages with `BODY.PEEK`
-   (so nothing is marked read before it is safely stored), decodes MIME headers and
-   multipart bodies, falls back from `text/plain` to stripped `text/html`.
+1. **Ingest** — polls a mailbox through one of two interchangeable backends selected by
+   `INGESTION` in `.env`: **Gmail API** (OAuth) or **IMAP** (`BODY.PEEK`, so nothing is
+   marked read before it is safely stored). Both yield the same `IncomingEmail`, decoding
+   MIME headers and multipart bodies and falling back from `text/plain` to stripped
+   `text/html`.
 2. **Classify & extract** — one LLM call per email with **forced tool-use**, so the model
    can only answer with a JSON object matching a fixed schema: category, sender, English
    summary, priority, resolved deadline, language, action-required flag, confidence.
@@ -55,8 +57,22 @@ pip install -r requirements.txt
 cp .env.example .env          # then fill it in
 ```
 
-**1. Test mailbox** (never a personal or school address). Create a dedicated Gmail
-account, enable 2FA, generate an *App Password*, and put it in `IMAP_PASSWORD`.
+**1. Test mailbox** — never a personal or school address; create a dedicated account.
+
+*Gmail API (`INGESTION=gmail_api`, default):* in Google Cloud Console create a project,
+enable the **Gmail API**, configure the OAuth consent screen as *External / Testing* and add
+the demo address as a test user, then create an **OAuth client ID → Desktop app** and save
+the downloaded JSON as `credentials.json` in the repo root. The first run opens a browser
+once and caches a refresh token in `token.json`. No App Password, no 2FA requirement.
+
+*IMAP (`INGESTION=imap`):* enable 2FA on the account, generate an App Password and put it in
+`IMAP_PASSWORD`. Kept for clients who are not on Google.
+
+Verify credentials before seeding:
+
+```bash
+python -m scripts.seed_mailbox --check-login
+```
 
 **2. Seed it with the 18 labelled fixtures** — appended over IMAP, so no mail is
 actually sent:
@@ -105,7 +121,9 @@ the LLM's uplift measurable, not to be used in production.
 ```
 app/
   config.py         env-backed config + validation
-  email_reader.py   IMAP ingestion, MIME parsing
+  ingest.py         backend factory (Reader protocol)
+  email_reader.py   IMAP ingestion, MIME parsing, shared IncomingEmail
+  gmail_reader.py   Gmail API ingestion over OAuth
   classifier.py     tool-use schema, prompt, few-shot, Anthropic + mock providers
   notion_writer.py  Notion page creation, duplicate guard, failed queue
   retry.py          exponential backoff (no third-party dependency)
@@ -124,7 +142,8 @@ fixtures/
   cannot return prose, and enum violations are rejected client-side in `_normalise`.
 - **Acknowledge last.** A message is flagged `\Seen` only after Notion confirms the write,
   so a crash mid-pipeline replays instead of losing work.
-- **Provider abstraction.** `Provider` is a `Protocol`; swapping Claude for another model,
+- **Both ends are swappable.** Ingestion (`Reader`) and classification (`Provider`) are
+  `Protocol`s: Gmail API ↔ IMAP is one line in `.env`, and swapping Claude for another model,
   or Notion for Airtable/a CRM, touches one module.
 - **Idempotency by `Message-ID`,** stored on the Notion page, so re-running is safe.
 
@@ -132,8 +151,9 @@ fixtures/
 
 - Test mailbox only, populated with synthetic emails — no third-party personal data.
 - All credentials in `.env`, which is git-ignored; `.env.example` documents the shape.
-- App Password rather than the account password; scope it to this mailbox and revoke after
-  the demo.
+- OAuth with the narrowest scopes that work (`gmail.modify`, `gmail.insert`) — no send
+  permission; `credentials.json` and `token.json` are git-ignored. On the IMAP path, an App
+  Password rather than the account password, revoked after the demo.
 - The demo is shown as a recorded GIF rather than live access to a running system.
 
 ## Adapting it

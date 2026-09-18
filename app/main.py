@@ -18,7 +18,8 @@ from pathlib import Path
 
 from .classifier import TriageResult, get_provider
 from .config import ConfigError, config
-from .email_reader import IncomingEmail, fetch_unseen, mark_seen
+from .email_reader import IncomingEmail
+from .ingest import Reader, get_reader
 from .notion_writer import NotionWriter, record_failure
 
 log = logging.getLogger("agent")
@@ -72,7 +73,8 @@ def log_processed(item: IncomingEmail, result: TriageResult, page_id: str) -> No
 
 
 def process_batch(emails: list[IncomingEmail], provider, writer: NotionWriter,
-                  ack: bool = True) -> dict[str, int]:
+                  reader: Reader | None = None) -> dict[str, int]:
+    """reader=None means the batch is replayed/local: nothing to acknowledge."""
     stats = {"ok": 0, "skipped": 0, "failed": 0}
     for item in emails:
         result: TriageResult | None = None
@@ -80,8 +82,8 @@ def process_batch(emails: list[IncomingEmail], provider, writer: NotionWriter,
             if writer.exists(item.message_id):
                 log.info("Already in Notion, skipping: %s", item.subject[:60])
                 stats["skipped"] += 1
-                if ack:
-                    mark_seen(item.uid)
+                if reader:
+                    reader.mark_seen(item.uid)
                 continue
 
             result = provider.classify(item)
@@ -90,8 +92,8 @@ def process_batch(emails: list[IncomingEmail], provider, writer: NotionWriter,
 
             page = writer.create_ticket(item, result)
             log_processed(item, result, page.get("id", ""))
-            if ack:
-                mark_seen(item.uid)  # only after a confirmed write
+            if reader:
+                reader.mark_seen(item.uid)  # only after a confirmed write
             stats["ok"] += 1
         except Exception as exc:
             log.exception("Failed on uid=%s", item.uid)
@@ -108,23 +110,25 @@ def replay_failed(provider, writer: NotionWriter) -> dict[str, int]:
     entries = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
     emails = [IncomingEmail(**e["email"]) for e in entries]
     log.info("Replaying %d failed item(s)", len(emails))
-    stats = process_batch(emails, provider, writer, ack=False)
+    stats = process_batch(emails, provider, writer)
     if stats["failed"] == 0:
         path.rename(path.with_suffix(".jsonl.done"))
         log.info("Failed queue drained")
     return stats
 
 
-def run_once(provider, writer: NotionWriter, source: str) -> dict[str, int]:
+def run_once(provider, writer: NotionWriter, source: str,
+             reader: Reader | None = None) -> dict[str, int]:
     if source == "fixtures":
         emails = load_fixture_emails()
         log.info("Loaded %d fixture email(s)", len(emails))
-        return process_batch(emails, provider, writer, ack=False)
-    emails = fetch_unseen()
+        return process_batch(emails, provider, writer)
+    reader = reader or get_reader()
+    emails = reader.fetch_unseen()
     if not emails:
         log.info("No new mail")
         return {"ok": 0, "skipped": 0, "failed": 0}
-    return process_batch(emails, provider, writer, ack=True)
+    return process_batch(emails, provider, writer, reader=reader)
 
 
 def main() -> int:
@@ -150,12 +154,21 @@ def main() -> int:
     if config.dry_run:
         log.warning("DRY_RUN=true - nothing will be written to Notion")
 
+    try:
+        return _dispatch(args, provider, writer)
+    except ConfigError as exc:
+        log.error("Configuration error: %s", exc)
+        return 2
+
+
+def _dispatch(args, provider, writer: NotionWriter) -> int:
+    reader = None if (args.fixtures or args.replay_failed) else get_reader()
     if args.replay_failed:
         stats = replay_failed(provider, writer)
     elif args.loop:
         stats = {"ok": 0, "skipped": 0, "failed": 0}
         while not _stop:
-            batch = run_once(provider, writer, "imap")
+            batch = run_once(provider, writer, "mailbox", reader)
             for k in stats:
                 stats[k] += batch[k]
             for _ in range(config.poll_interval):
@@ -163,7 +176,7 @@ def main() -> int:
                     break
                 time.sleep(1)
     else:
-        stats = run_once(provider, writer, "fixtures" if args.fixtures else "imap")
+        stats = run_once(provider, writer, "fixtures" if args.fixtures else "mailbox", reader)
 
     log.info("Done | created=%(ok)d skipped=%(skipped)d failed=%(failed)d", stats)
     return 1 if stats["failed"] else 0

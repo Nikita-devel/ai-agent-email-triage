@@ -37,6 +37,12 @@ class ConfigError(RuntimeError):
 
 @dataclass(frozen=True)
 class Config:
+    ingestion: str = os.getenv("INGESTION", "imap").strip().lower()
+
+    gmail_credentials_path: Path = ROOT / os.getenv("GMAIL_CREDENTIALS_FILE", "credentials.json")
+    gmail_token_path: Path = ROOT / os.getenv("GMAIL_TOKEN_FILE", "token.json")
+    gmail_label: str = os.getenv("GMAIL_LABEL", "INBOX")
+
     imap_host: str = os.getenv("IMAP_HOST", "imap.gmail.com")
     imap_port: int = _int("IMAP_PORT", 993)
     imap_user: str = os.getenv("IMAP_USER", "")
@@ -69,11 +75,32 @@ class Config:
     def processed_log_path(self) -> Path:
         return self.data_dir / "processed.jsonl"
 
+    def require_ingestion(self) -> None:
+        if self.ingestion == "gmail_api":
+            self.require_gmail()
+        elif self.ingestion == "imap":
+            self.require_imap()
+        else:
+            raise ConfigError(f"Unknown INGESTION: {self.ingestion} (use imap or gmail_api)")
+
+    def require_gmail(self) -> None:
+        if not self.gmail_credentials_path.exists():
+            raise ConfigError(
+                f"{self.gmail_credentials_path.name} not found. Create an OAuth client "
+                "(Desktop app) in Google Cloud Console, download the JSON and save it there."
+            )
+
     def require_imap(self) -> None:
         missing = [k for k, v in {"IMAP_USER": self.imap_user,
                                   "IMAP_PASSWORD": self.imap_password}.items() if not v]
         if missing:
             raise ConfigError(f"Missing env vars: {', '.join(missing)}")
+        if set(self.imap_password.replace(" ", "")) <= {"x", "X"}:
+            raise ConfigError(
+                "IMAP_PASSWORD is still the .env.example placeholder. "
+                "Generate a Gmail App Password at myaccount.google.com/apppasswords "
+                "(requires 2-Step Verification) and paste the 16 characters."
+            )
 
     def require_llm(self) -> None:
         if self.llm_provider == "anthropic" and not self.anthropic_api_key:
