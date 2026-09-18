@@ -47,9 +47,19 @@ TOOL_SCHEMA = {
                 "type": "string",
                 "enum": list(PRIORITIES),
                 "description": (
-                    "urgent: production is blocked or an explicit ultimatum/<48h deadline. "
-                    "high: revenue, contract or escalation at stake. medium: normal request. "
-                    "low: informational, no action expected soon."
+                    "Judge the business consequence of NOT acting today, not the sender's tone.\n"
+                    "urgent: work is stopped right now (production halted, nobody can log in), "
+                    "or an explicit ultimatum / deadline under 48h.\n"
+                    "high: money or a relationship is at stake if it slips - an inbound lead or "
+                    "quote request, a contract or renewal to sign, a statutory or tax deadline "
+                    "(URSSAF, TVA, declarations), a repeat escalation, or a degraded system that "
+                    "still runs.\n"
+                    "medium: a real request with no date pressure - a routine question, an "
+                    "invoice detail, a bug with a workaround.\n"
+                    "low: informational or explicitly not blocking - the sender says it can wait, "
+                    "plans a future budget, or the message needs no action at all.\n"
+                    "A stated regulatory deadline is never low. A sender saying 'ce n'est pas "
+                    "bloquant' is never above medium."
                 ),
             },
             "extracted_deadline": {
@@ -84,6 +94,21 @@ dispute the amount - a disputed invoice is a complaint.
 - Resolve relative dates ("before Friday", "end of the month") against the email's received \
 date, given below. If no deadline is stated, return null - never invent one.
 - summary is always in English, regardless of the email language.
+
+Priority is decided by consequence and time, in this order - the first rule that matches wins:
+1. The sender states the problem is NOT blocking, NOT urgent, or that there is no rush -> low, \
+even for a technical fault.
+2. Production is stopped, people cannot work, there is an ultimatum, or a stated deadline is \
+within 48 hours -> urgent.
+3. A stated deadline within 14 days that requires a reply -> at least high. This includes \
+legal, tax and accounting deadlines in automated messages (URSSAF, tax office, administration): \
+an automated sender does not make a legal deadline low.
+4. Money is on the table in a concrete way - a contract or its renewal, a written proposal \
+requested, a stated budget, a multi-site or multi-year scope -> high. A first-contact enquiry \
+with no budget, scope or deadline is medium.
+5. A recurring or scheduled process is stuck and the sender is blocked on its output -> high.
+6. A newsletter, cold outreach, or notification that asks nothing of the reader -> low.
+7. Anything else -> medium.
 
 Today's date for reference: {today}."""
 

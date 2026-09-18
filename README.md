@@ -83,12 +83,18 @@ python -m scripts.seed_mailbox             # append as unread
 python -m scripts.seed_mailbox --purge     # clean up afterwards
 ```
 
-**3. Notion** — create an internal integration at <https://notion.so/my-integrations>,
-share a page with it, then:
+The seeder puts the fixtures under their own Gmail label (`GMAIL_LABEL`, default
+`AI-Triage-Demo`) and the reader only looks at that label, so the agent never touches the
+rest of the mailbox.
+
+**3. Notion** — in Notion, Developer tools → Connections → New connection (Internal), give
+it Read + Insert content, copy the access token into `NOTION_API_KEY`, and grant it access
+to one page (Content access, or ••• → Connections on the page itself). Then:
 
 ```bash
-python -m scripts.setup_notion --parent-page <page_id>
-# prints the NOTION_DATABASE_ID to paste into .env
+python -m scripts.setup_notion --parent-page <page_id>   # prints NOTION_DATABASE_ID
+python -m scripts.check_notion                           # verify the schema
+python -m scripts.check_notion --repair                  # add anything missing
 ```
 
 **4. Run**
@@ -146,6 +152,14 @@ fixtures/
   `Protocol`s: Gmail API ↔ IMAP is one line in `.env`, and swapping Claude for another model,
   or Notion for Airtable/a CRM, touches one module.
 - **Idempotency by `Message-ID`,** stored on the Notion page, so re-running is safe.
+- **Both the Notion API version and the SDK are pinned** (`2022-06-28`, `notion-client==2.2.1`).
+  Notion's 2025-09-03 API moved database properties into "data sources" and dropped
+  `databases.query`; newer SDKs reshape request bodies for that model whatever version you
+  ask for. A client integration should not break because a provider shipped a redesign, so
+  the version is a deliberate, documented choice rather than a default.
+- **`DRY_RUN` never mutates anything** — not even mailbox read state — so a rehearsal can be
+  repeated verbatim.
+- **Gmail quota-aware**: list/get calls back off on 403/429 rather than aborting the run.
 
 ## Security
 

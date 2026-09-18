@@ -16,7 +16,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app.config import CATEGORIES, PRIORITIES, config  # noqa: E402
-from app.notion_writer import PROPS  # noqa: E402
+from app.notion_writer import NOTION_API_VERSION, PROPS  # noqa: E402
 
 CATEGORY_COLORS = ["blue", "green", "red", "yellow", "gray"]
 PRIORITY_COLORS = ["gray", "blue", "orange", "red"]
@@ -34,7 +34,7 @@ def main() -> int:
 
     from notion_client import Client
 
-    client = Client(auth=config.notion_api_key)
+    client = Client(auth=config.notion_api_key, notion_version=NOTION_API_VERSION)
     db = client.databases.create(
         parent={"type": "page_id", "page_id": args.parent_page},
         title=[{"type": "text", "text": {"content": args.title}}],

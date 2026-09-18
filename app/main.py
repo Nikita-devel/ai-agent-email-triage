@@ -33,6 +33,8 @@ def _setup_logging() -> None:
         datefmt="%H:%M:%S",
     )
     logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("httpx2").setLevel(logging.WARNING)
+    logging.getLogger("notion_client").setLevel(logging.ERROR)
 
 
 def _handle_sigterm(*_args) -> None:
@@ -75,6 +77,9 @@ def log_processed(item: IncomingEmail, result: TriageResult, page_id: str) -> No
 def process_batch(emails: list[IncomingEmail], provider, writer: NotionWriter,
                   reader: Reader | None = None) -> dict[str, int]:
     """reader=None means the batch is replayed/local: nothing to acknowledge."""
+    if writer.dry_run and reader is not None:
+        log.info("DRY_RUN: messages stay unread so the run can be repeated")
+        reader = None
     stats = {"ok": 0, "skipped": 0, "failed": 0}
     for item in emails:
         result: TriageResult | None = None

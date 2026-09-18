@@ -46,6 +46,8 @@ def main() -> int:
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--check-login", action="store_true", help="verify credentials and exit")
     ap.add_argument("--purge", action="store_true", help="delete seeded fixtures instead")
+    ap.add_argument("--reset-unread", action="store_true",
+                    help="mark seeded fixtures unread again (re-record the demo)")
     args = ap.parse_args()
 
     items = json.loads(FIXTURES.read_text(encoding="utf-8"))
@@ -72,6 +74,11 @@ def main() -> int:
     if args.purge:
         removed = reader.purge(SEED_HEADER, SEED_MARK)
         print(f"Purged {removed} seeded message(s)")
+        return 0
+
+    if args.reset_unread:
+        n = reader.reset_unread(SEED_HEADER, SEED_MARK)
+        print(f"{n} fixture(s) back to unread")
         return 0
 
     base = datetime.now(timezone.utc) - timedelta(hours=len(items))

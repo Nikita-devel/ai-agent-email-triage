@@ -14,6 +14,13 @@ from .email_reader import IncomingEmail
 
 log = logging.getLogger(__name__)
 
+# Pinned deliberately, both the wire version and the SDK (see requirements.txt):
+# Notion's 2025-09-03 API moved properties into "data sources" and removed
+# databases.query, and notion-client >= 2.3 reshapes request bodies for that
+# model whatever version is requested. Pinning both keeps a provider-side change
+# from silently breaking a client deployment.
+NOTION_API_VERSION = "2022-06-28"
+
 # Property names expected in the Notion database (see scripts/setup_notion.py)
 PROPS = {
     "title": "Request",
@@ -83,7 +90,8 @@ class NotionWriter:
             from notion_client.errors import APIResponseError, HTTPResponseError
 
             self._retryable = (APIResponseError, HTTPResponseError)
-            self.client = Client(auth=cfg.notion_api_key)
+            self.client = Client(auth=cfg.notion_api_key,
+                                 notion_version=NOTION_API_VERSION)
         else:
             self._retryable = (Exception,)
 
@@ -92,10 +100,14 @@ class NotionWriter:
         if self.dry_run or not self.client:
             return False
         try:
-            res = self.client.databases.query(
-                database_id=self.cfg.notion_database_id,
-                filter={"property": PROPS["message_id"], "rich_text": {"equals": message_id}},
-                page_size=1,
+            res = self.client.request(
+                path=f"databases/{self.cfg.notion_database_id}/query",
+                method="POST",
+                body={
+                    "filter": {"property": PROPS["message_id"],
+                               "rich_text": {"equals": message_id}},
+                    "page_size": 1,
+                },
             )
             return bool(res.get("results"))
         except Exception as exc:  # a failed lookup must not block ingestion

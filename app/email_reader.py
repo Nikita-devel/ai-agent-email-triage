@@ -181,6 +181,14 @@ class ImapReader:
             )
         return status
 
+    def reset_unread(self, header_name: str, header_value: str) -> int:
+        with imap_connection(self.cfg) as conn:
+            status, data = conn.uid("SEARCH", None, "HEADER", header_name, header_value)
+            uids = data[0].split() if status == "OK" else []
+            for uid in uids:
+                conn.uid("STORE", uid.decode(), "-FLAGS", "(\\Seen)")
+        return len(uids)
+
     def purge(self, header_name: str, header_value: str) -> int:
         with imap_connection(self.cfg) as conn:
             status, data = conn.uid("SEARCH", None, "HEADER", header_name, header_value)

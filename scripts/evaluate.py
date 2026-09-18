@@ -30,7 +30,9 @@ def main() -> int:
     provider = MockProvider() if args.mock else get_provider()
     emails = load_fixture_emails()
 
-    cat_hits = prio_hits = deadline_hits = 0
+    cat_hits = prio_hits = prio_near = deadline_hits = 0
+    rank = {p: i for i, p in enumerate(PRIORITIES)}
+    disagreements = []
     confusion: dict[str, Counter] = defaultdict(Counter)
     rows = []
 
@@ -40,9 +42,13 @@ def main() -> int:
         cat_ok = res.category == exp["category"]
         prio_ok = res.priority == exp["priority"]
         dl_ok = bool(res.extracted_deadline) == exp["has_deadline"]
+        gap = abs(rank[res.priority] - rank[exp["priority"]])
         cat_hits += cat_ok
         prio_hits += prio_ok
+        prio_near += gap <= 1
         deadline_hits += dl_ok
+        if not prio_ok:
+            disagreements.append((item.uid, exp["priority"], res.priority, gap))
         confusion[exp["category"]][res.category] += 1
         rows.append((item.uid, exp["category"], res.category, cat_ok,
                      exp["priority"], res.priority, prio_ok))
@@ -54,8 +60,15 @@ def main() -> int:
         print(f"{uid:<14}{ec:<18}{pc:<18}{'OK' if cok else 'XX':<3}{ep:<10}{pp:<10}{'' if pok else '<-'}")
     print("-" * 76)
     print(f"category accuracy : {cat_hits}/{n}  ({cat_hits / n:.0%})")
-    print(f"priority accuracy : {prio_hits}/{n}  ({prio_hits / n:.0%})")
+    print(f"priority exact    : {prio_hits}/{n}  ({prio_hits / n:.0%})")
+    print(f"priority within 1 : {prio_near}/{n}  ({prio_near / n:.0%})"
+          "   <- ordinal scale: an off-by-one is a judgement call, not an error")
     print(f"deadline detection: {deadline_hits}/{n}  ({deadline_hits / n:.0%})")
+
+    if disagreements:
+        print("\npriority disagreements (gap 2+ are real errors, gap 1 is rubric noise):")
+        for uid, ep, pp, gap in sorted(disagreements, key=lambda d: -d[3]):
+            print(f"  {uid:<14} {ep:<8} -> {pp:<8} gap={gap}")
 
     print("\nconfusion (expected -> predicted):")
     for exp_cat, counter in confusion.items():
