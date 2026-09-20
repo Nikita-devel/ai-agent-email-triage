@@ -18,6 +18,8 @@ sort their inbox by hand.
                      └───────────────┘
 ```
 
+![Unread mail in Gmail, triaged and filed into Notion automatically](docs/demo.gif)
+
 ## What it does
 
 1. **Ingest** — polls a mailbox through one of two interchangeable backends selected by

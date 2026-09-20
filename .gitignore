@@ -9,3 +9,7 @@ data/*.jsonl
 data/state.json
 *.log
 .DS_Store
+
+# raw screen recordings - only the exported GIF is tracked
+*.webm
+*.mp4
