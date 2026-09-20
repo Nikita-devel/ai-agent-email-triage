@@ -1,0 +1,60 @@
+VOICEOVER SCRIPT — ENGLISH VERSION
+Target length: 1 min 43 s  ·  Pace: calm, around 150 words per minute
+
+
+[0:00 – 0:14]   ON SCREEN: the mailbox, eighteen unread messages
+
+In a small manufacturing company, everything arrives in one mailbox.
+A stopped production line. A request for a quote. A disputed invoice.
+A tax deadline. And a dozen newsletters.
+Someone sorts all of it by hand, every morning.
+
+
+[0:14 – 0:26]   ON SCREEN: the command runs, first log lines appear
+
+This is an agent that does it instead.
+It reads the mailbox, understands each message, and creates a ticket in the company's tool.
+Nobody is involved.
+
+
+[0:26 – 0:52]   ON SCREEN: log lines scroll, tickets appear in Notion
+
+For every email it identifies the category: technical support, sales inquiry,
+complaint, administrative.
+It assigns a priority based on real consequence.
+A stopped production line: urgent.
+A client who says himself that it is not blocking: low.
+It extracts the deadline mentioned in the text, detects the language,
+and keeps the original email inside the ticket.
+
+Eighteen messages, two minutes, a few cents.
+
+
+[0:52 – 1:14]   ON SCREEN: the filled Notion database, then the failed queue
+
+And when it breaks?
+Mid-project, Notion changed its API. The integration stopped working.
+Not one email was lost.
+Failed writes went into a replayable queue.
+The messages stayed unread.
+After the fix, the whole batch was processed again. With no manual re-entry.
+
+A message is marked read only after the ticket is confirmed written.
+
+
+[1:14 – 1:30]   ON SCREEN: the accuracy report in the terminal
+
+Across eighteen hand-labelled emails, in French and English:
+one hundred percent on category, one hundred percent on deadlines,
+ninety-four percent on priority within one level.
+
+That report ships with the project. You can run it on your own email.
+
+
+[1:30 – 1:43]   ON SCREEN: the diagram, or the logo
+
+The mailbox and the destination are separate modules.
+Gmail or IMAP. Notion, Airtable, your CRM.
+What changes from one client to the next is configuration, not development.
+
+Fifty of your own emails are enough to get a real figure for your mail.

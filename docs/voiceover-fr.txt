@@ -1,0 +1,60 @@
+SCRIPT VOIX OFF — VERSION FRANÇAISE
+Durée cible : 1 min 43 s  ·  Débit : calme, environ 145 mots/minute
+
+
+[0:00 – 0:14]   À L'ÉCRAN : la boîte mail, dix-huit messages non lus
+
+Dans une PME industrielle, tout arrive par la même boîte mail.
+Une ligne de production à l'arrêt. Une demande de devis. Une facture contestée.
+Une échéance URSSAF. Et une dizaine de newsletters.
+Quelqu'un trie tout cela à la main, chaque matin.
+
+
+[0:14 – 0:26]   À L'ÉCRAN : on lance la commande, les premières lignes défilent
+
+Voici un agent qui le fait à sa place.
+Il relève la boîte, lit chaque message, et crée une fiche dans l'outil de l'entreprise.
+Personne n'intervient.
+
+
+[0:26 – 0:52]   À L'ÉCRAN : les lignes défilent, les fiches apparaissent dans Notion
+
+Pour chaque e-mail, il identifie la catégorie : support technique, demande commerciale,
+réclamation, administratif.
+Il attribue une priorité selon la conséquence réelle.
+Une production à l'arrêt : urgent.
+Un client qui précise lui-même que ce n'est pas bloquant : priorité basse.
+Il extrait l'échéance mentionnée dans le texte, détecte la langue,
+et conserve l'e-mail d'origine dans la fiche.
+
+Dix-huit messages, deux minutes, quelques centimes.
+
+
+[0:52 – 1:14]   À L'ÉCRAN : la base Notion remplie, puis la file d'échecs
+
+Et quand ça casse ?
+En cours de projet, Notion a changé son API. L'intégration s'est arrêtée.
+Aucun e-mail n'a été perdu.
+Les écritures en échec sont parties dans une file rejouable.
+Les messages sont restés non lus.
+Après correction, tout le lot a été retraité. Sans aucune ressaisie.
+
+Un message n'est marqué comme lu qu'après confirmation de l'écriture.
+
+
+[1:14 – 1:30]   À L'ÉCRAN : le rapport d'exactitude dans le terminal
+
+Sur dix-huit e-mails annotés à la main, en français et en anglais :
+cent pour cent sur la catégorie, cent pour cent sur les échéances,
+quatre-vingt-quatorze pour cent sur la priorité à un niveau près.
+
+Ce rapport est livré avec le projet. Il se relance sur vos propres e-mails.
+
+
+[1:30 – 1:43]   À L'ÉCRAN : le schéma, ou le logo
+
+La boîte mail et la destination sont deux modules séparés.
+Gmail ou IMAP. Notion, Airtable, votre CRM.
+Ce qui change d'un client à l'autre relève du paramétrage, pas du développement.
+
+Cinquante de vos e-mails suffisent pour obtenir un chiffre réel sur votre courrier.
